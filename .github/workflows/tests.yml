@@ -1,0 +1,28 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  pytest:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.13"   # oldest supported Home Assistant 2026.x
+          - python: "3.14"   # latest Home Assistant
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Tools (Azurite, Bicep)
+        run: |
+          npm install -g azurite
+          curl -sSLo /usr/local/bin/bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+          chmod +x /usr/local/bin/bicep
+      - run: pip install -r requirements_test.txt
+      - run: python -c "import homeassistant.const as c; print('Home Assistant', c.__version__)"
+      - run: pip install ruff && ruff check .
+      - run: pytest --cov --cov-report=term-missing

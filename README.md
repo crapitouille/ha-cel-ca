@@ -1,5 +1,13 @@
 # CEL-CA — HEMS coopératifs pour Communauté Électrique Locale
 
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories/)
+[![Release](https://img.shields.io/github/v/release/crapitouille/ha-cel-ca)](https://github.com/crapitouille/ha-cel-ca/releases)
+[![Validate](https://github.com/crapitouille/ha-cel-ca/actions/workflows/validate.yml/badge.svg)](https://github.com/crapitouille/ha-cel-ca/actions/workflows/validate.yml)
+[![Tests](https://github.com/crapitouille/ha-cel-ca/actions/workflows/tests.yml/badge.svg)](https://github.com/crapitouille/ha-cel-ca/actions/workflows/tests.yml)
+
+[![Ouvrir dans HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=crapitouille&repository=ha-cel-ca&category=integration)
+[![Ajouter l'intégration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=cel_ca)
+
 Intégration Home Assistant (2026.x) permettant aux HEMS d'un quartier membre d'une même
 Communauté Électrique Locale de :
 
@@ -17,8 +25,17 @@ custom_components/cel_ca/   intégration HA (core/ = protocole pur Python, sans 
 tools/cel_admin.py          outil de l'administrateur CEL (clé admin, enrôlement, clés d'accès, registre)
 azure/                      Storage Account (Bicep + deploy.sh pour Azure Cloud Shell) - voir azure/README.md
 examples/automations.yaml   exemples : recharge VE sur surplus, offre planifiée, notifications
-tests/                      tests de non-régression (pytest, 188 tests, HA 2026.2 et 2026.10)
+tests/                      tests de non-régression (pytest, 197 tests, HA 2026.2 et 2026.10)
 ```
+
+## Installation (HACS)
+
+1. Bouton **Ouvrir dans HACS** ci-dessus (ou *HACS → ⋮ → Custom repositories* : `https://github.com/crapitouille/ha-cel-ca`, type *Integration*).
+2. **Download**, choisir la dernière version, puis redémarrer Home Assistant.
+3. Bouton **Ajouter l'intégration** ci-dessus (ou *Settings → Devices & services → Add integration → CEL-CA*) et suivre le § 2.
+
+Les mises à jour apparaissent ensuite dans *Settings → Updates*. Installation manuelle : copier
+`custom_components/cel_ca` dans `/config/custom_components/` et redémarrer.
 
 ## 1. Mise en place de la CEL (administrateur, une fois, dans Azure Cloud Shell Bash)
 
@@ -33,7 +50,7 @@ Sauvegarder `cel_admin_key.json` hors ligne (clé de l'administrateur).
 
 ## 2. Ajout d'un HEMS (chaque membre)
 
-1. Copier `custom_components/cel_ca` dans `/config/custom_components/` (ou via HACS, dépôt personnalisé) et redémarrer HA.
+1. Installer l'intégration (voir *Installation (HACS)* ci-dessus) et redémarrer HA.
 2. *Paramètres → Appareils et services → Ajouter → CEL-CA* : le formulaire affiche **l'identifiant HEMS et la clé publique** → les transmettre à l'administrateur.
 3. L'administrateur enrôle le HEMS et renvoie une **clé d'accès CEL** (`CEL1.…`) :
 
@@ -139,6 +156,7 @@ pytest --cov
 * `tests/core` : identité, canonisation, validation, arbitrage, créneaux, réservation globale, réductions, métrologie, scénarios multi-HEMS, sécurité (usurpation, rejeu, ancien état, faux registre, révocation, limitation de débit), outil admin.
 * `tests/storage` : signatures SAS **identiques à celles des SDK Azure officiels**, transport et administration de bout en bout sur **Azurite** (deux/trois HEMS, réservation globale, révocation, clé invalide, reconnexion), outil `cel_admin` complet.
 * `tests/ha` : config flow (clé d'accès, erreurs, restauration, réauthentification, reconfiguration, alerte d'expiration, **migration depuis la v0.5**), options, entités (y compris noms français), actions, événements, persistance, diagnostics (secrets masqués), et HA de bout en bout sur Azurite.
+* `tests/test_packaging.py` : distribution HACS (structure, `hacs.json`, manifeste, icône, cohérence des versions, boutons du README, workflows).
 * `tests/azure` : compilation et lint Bicep, shellcheck, `deploy.sh` exécuté de bout en bout contre un faux `az` et Azurite.
 
 Toute alerte de dépréciation de Home Assistant concernant `cel_ca` fait échouer les tests HA : les API

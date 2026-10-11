@@ -1,0 +1,6 @@
+__pycache__/
+.pytest_cache/
+.coverage
+.venv/
+cel_admin_key.json
+registry.signed.json
