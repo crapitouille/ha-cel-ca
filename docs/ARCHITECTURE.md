@@ -1,4 +1,4 @@
-# CEL-CA — Architecture et protocole v1 (transport Azure Storage, v0.6)
+# WattKeeper (CEL-CA) — Architecture et protocole v1
 
 Coordination de HEMS Home Assistant au sein d'une Communauté Électrique Locale (CEL).
 
@@ -104,9 +104,8 @@ Jetons SAS d'un membre (clé d'accès `CEL1.<base64url JSON>`, 365 jours par dé
 ni le registre, ni lire la boîte d'un autre. Une erreur 401/403 en cours de fonctionnement (clé expirée ou
 révoquée) déclenche la réauthentification dans HA.
 
-**Fonctionnalités abandonnées par rapport au broker MQTT** (non essentielles) : notification instantanée
-(remplacée par l'interrogation périodique, latence ≤ 15 s pour l'état, 1–5 s pour les requêtes) et *last
-will* (un HEMS coupé brutalement est vu hors ligne après 3 min au lieu de quelques secondes).
+**Latences** : interrogation périodique, ≤ 15 s pour l'état, 1–5 s pour les requêtes. Un HEMS coupé
+brutalement est vu hors ligne au bout de 3 min (absence de heartbeat).
 
 ## 6. Cycle de vie
 
@@ -144,8 +143,7 @@ l'heure, donc créneaux alignés sur les heures pleines, en temps UNIX). Quand i
 * il n'y a pas de renouvellement automatique : le consommateur envoie une nouvelle requête pour chaque
   créneau ;
 * les bilans de respect sont donc calculés par créneau, comme le décompte du GRD.
-Sans `params`, le marché reste continu (compatibilité). Les HEMS antérieurs à v0.5.0 refusent un registre
-contenant `params` : les mettre à jour avant de publier le paramètre.
+Sans `params`, le marché reste continu.
 
 ### Réservation globale (plusieurs producteurs)
 Le consommateur répartit la puissance demandée **au prorata du surplus disponible** de chaque offre en

@@ -118,3 +118,26 @@ def test_github_workflows() -> None:
     assert "home-assistant/actions/hassfest@" in validate
     release = (workflows / "release.yml").read_text(encoding="utf-8")
     assert "manifest.json" in release and "gh release create" in release
+
+
+def _github_anchor(title: str) -> str:
+    """Anchor GitHub generates for a heading."""
+    return re.sub(r"[^\w\- ]", "", title.strip().lower()).replace(" ", "-")
+
+
+@pytest.mark.parametrize("doc", ["README.md", "azure/README.md"])
+def test_internal_links_point_to_existing_headings(doc: str) -> None:
+    text = (ROOT / doc).read_text(encoding="utf-8")
+    for target, anchor in re.findall(r"\]\(([^)#\s]*)#([^)\s]+)\)", text):
+        if target.startswith("http"):
+            continue
+        linked = (ROOT / doc).parent / target if target else ROOT / doc
+        headings = re.findall(r"^#+ (.+)$", linked.read_text(encoding="utf-8"), flags=re.MULTILINE)
+        assert anchor in {_github_anchor(h) for h in headings}, f"{doc}: broken link #{anchor}"
+
+
+@pytest.mark.parametrize("doc", ["README.md", "azure/README.md", "docs/ARCHITECTURE.md"])
+def test_docs_only_describe_the_storage_architecture(doc: str) -> None:
+    text = (ROOT / doc).read_text(encoding="utf-8").lower()
+    for word in ("mqtt", "broker", "mosquitto", "cloud-init", " vm ", "machine virtuelle"):
+        assert word not in text, f"{doc} mentions {word!r}"
