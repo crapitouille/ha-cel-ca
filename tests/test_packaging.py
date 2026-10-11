@@ -13,6 +13,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 INTEGRATION = ROOT / "custom_components" / "cel_ca"
 REPO_URL = "https://github.com/crapitouille/ha-cel-ca"
+DISPLAY_NAME = "WattKeeper - Communauté Electrique Locale"
 
 # Keys accepted by HACS in hacs.json (custom_components/hacs/utils/validate.py).
 HACS_JSON_KEYS = {
@@ -49,7 +50,7 @@ def test_single_integration_in_custom_components() -> None:
 
 def test_hacs_json() -> None:
     data = json.loads((ROOT / "hacs.json").read_text(encoding="utf-8"))
-    assert data["name"]
+    assert data["name"] == DISPLAY_NAME == manifest()["name"]
     assert set(data) <= HACS_JSON_KEYS
     assert re.fullmatch(r"20\d\d\.\d+\.\d+", data["homeassistant"])
     assert data.get("country") in (None, "CH")
@@ -76,11 +77,18 @@ def test_versions_are_consistent() -> None:
 
 
 @pytest.mark.parametrize(("name", "size"), [("icon.png", 256), ("icon@2x.png", 512)])
-def test_brand_images(name: str, size: int) -> None:
+def test_brand_icons(name: str, size: int) -> None:
     """Home Assistant 2026.3+ and the HACS 'brands' check read custom_components/<domain>/brand/."""
     width, height, colour = png_size(INTEGRATION / "brand" / name)
     assert (width, height) == (size, size)
     assert colour == 6, "RGBA expected (transparent background)"
+
+
+@pytest.mark.parametrize(("name", "height"), [("logo.png", 128), ("logo@2x.png", 256)])
+def test_brand_logos(name: str, height: int) -> None:
+    """Logos: landscape, shortest side 128 px (256 px for @2x), transparent."""
+    width, h, colour = png_size(INTEGRATION / "brand" / name)
+    assert h == height and width >= height and colour == 6
 
 
 def test_license_is_osi_approved() -> None:
@@ -96,6 +104,11 @@ def test_readme_buttons_point_to_this_repository() -> None:
         in readme
     )
     assert "https://my.home-assistant.io/redirect/config_flow_start/?domain=cel_ca" in readme
+    # the logo shown by GitHub and HACS is a file of this repository (default branch)
+    prefix = "https://raw.githubusercontent.com/crapitouille/ha-cel-ca/main/"
+    logos = re.findall(re.escape(prefix) + r"([\w/@.]+)", readme)
+    assert logos and all((ROOT / path).is_file() for path in logos)
+    assert f"# {DISPLAY_NAME}" in readme
 
 
 def test_github_workflows() -> None:

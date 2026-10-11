@@ -47,7 +47,7 @@ from .transport import Transport, TransportError
 
 _LOGGER = logging.getLogger(__name__)
 
-SW_VERSION = "0.6.1"
+SW_VERSION = "0.6.2"
 MAX_BUFFERED = 512
 
 

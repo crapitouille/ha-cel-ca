@@ -24,10 +24,10 @@ Mo de données), à vérifier dans le [calculateur de prix Azure](https://azure.
 ## Déploiement (une fois, Azure Cloud Shell en Bash)
 
 1. Cloud Shell en **Bash** avec stockage persistant (`ls ~/clouddrive` doit fonctionner).
-2. *Gérer les fichiers → Charger* `cel-ca-v0.6.0.zip`, puis :
+2. *Gérer les fichiers → Charger* `cel-ca-v0.6.2.zip`, puis :
 
    ```bash
-   cd ~/clouddrive && rm -rf cel-ca && unzip -q ~/cel-ca-v0.6.0.zip -d ~/clouddrive && cd ~/clouddrive/cel-ca
+   cd ~/clouddrive && rm -rf cel-ca && unzip -q ~/cel-ca-v0.6.2.zip -d ~/clouddrive && cd ~/clouddrive/cel-ca
    python3 -m pip install --user cryptography        # seule dépendance de l'outil admin
    ```
 
@@ -66,7 +66,7 @@ Relancer `deploy.sh` est sans danger (déploiement Bicep idempotent).
 
 ## Ajouter un HEMS
 
-Le membre ajoute l'intégration CEL-CA dans Home Assistant ; le formulaire affiche son **identifiant HEMS**
+Le membre ajoute l'intégration WattKeeper (CEL-CA) dans Home Assistant ; le formulaire affiche son **identifiant HEMS**
 et sa **clé publique**, qu'il t'envoie (en gardant le formulaire ouvert).
 
 ```bash
@@ -85,7 +85,7 @@ expiration — 365 jours par défaut, `--days` pour changer). Il la colle dans *
 A="python3 tools/cel_admin.py --dir $HOME/clouddrive/cel-admin"
 $A list                                   # membres, paramètres, compte de stockage
 $A revoke --id <hems-id>; $A publish      # exclut le membre, supprime sa boîte et son état
-$A member-access --id <hems-id>           # nouvelle clé (expiration) -> HA : CEL-CA > ⋮ > Reconfigure
+$A member-access --id <hems-id>           # nouvelle clé (expiration) -> HA : WattKeeper > ⋮ > Reconfigure
 $A set-param --slot-minutes 15; $A publish  # créneaux de marché (0 = continu)
 $A selftest                               # revérifie les droits d'accès des membres
 ```
@@ -119,7 +119,7 @@ L'identité des HEMS, le dossier administrateur et les membres enrôlés sont **
 
 3. **Mettre à jour l'intégration dans Home Assistant** : remplacer `/config/custom_components/cel_ca` par la
    v0.6.0 et redémarrer. L'entrée est migrée automatiquement (paramètres MQTT supprimés, identité
-   conservée) et HA demande une réauthentification : *Settings → Devices & services*, carte *CEL-CA* en haut de la
+   conservée) et HA demande une réauthentification : *Settings → Devices & services*, carte *WattKeeper* en haut de la
    page → *Reconfigure*, coller la clé `CEL1.…`. Les entités gardent leurs identifiants.
 4. Vérifier : `binary_sensor.<hems>_cel_broker` (nom affiché « CEL connection ») = *on*, `…_enrolled` = *on*.
 5. **Supprimer l'ancienne VM** une fois tous les HEMS migrés :

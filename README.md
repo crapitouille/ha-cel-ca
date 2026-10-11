@@ -1,4 +1,8 @@
-# CEL-CA — HEMS coopératifs pour Communauté Électrique Locale
+<img src="https://raw.githubusercontent.com/crapitouille/ha-cel-ca/main/custom_components/cel_ca/brand/logo@2x.png" alt="WattKeeper" height="96">
+
+# WattKeeper - Communauté Electrique Locale (CEL-CA)
+
+HEMS coopératifs pour Communauté Électrique Locale.
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/docs/faq/custom_repositories/)
 [![Release](https://img.shields.io/github/v/release/crapitouille/ha-cel-ca)](https://github.com/crapitouille/ha-cel-ca/releases)
@@ -25,14 +29,14 @@ custom_components/cel_ca/   intégration HA (core/ = protocole pur Python, sans 
 tools/cel_admin.py          outil de l'administrateur CEL (clé admin, enrôlement, clés d'accès, registre)
 azure/                      Storage Account (Bicep + deploy.sh pour Azure Cloud Shell) - voir azure/README.md
 examples/automations.yaml   exemples : recharge VE sur surplus, offre planifiée, notifications
-tests/                      tests de non-régression (pytest, 197 tests, HA 2026.2 et 2026.10)
+tests/                      tests de non-régression (pytest, 199 tests, HA 2026.2 et 2026.10)
 ```
 
 ## Installation (HACS)
 
 1. Bouton **Ouvrir dans HACS** ci-dessus (ou *HACS → ⋮ → Custom repositories* : `https://github.com/crapitouille/ha-cel-ca`, type *Integration*).
 2. **Download**, choisir la dernière version, puis redémarrer Home Assistant.
-3. Bouton **Ajouter l'intégration** ci-dessus (ou *Settings → Devices & services → Add integration → CEL-CA*) et suivre le § 2.
+3. Bouton **Ajouter l'intégration** ci-dessus (ou *Settings → Devices & services → Add integration → WattKeeper*) et suivre le § 2.
 
 Les mises à jour apparaissent ensuite dans *Settings → Updates*. Installation manuelle : copier
 `custom_components/cel_ca` dans `/config/custom_components/` et redémarrer.
@@ -51,7 +55,7 @@ Sauvegarder `cel_admin_key.json` hors ligne (clé de l'administrateur).
 ## 2. Ajout d'un HEMS (chaque membre)
 
 1. Installer l'intégration (voir *Installation (HACS)* ci-dessus) et redémarrer HA.
-2. *Paramètres → Appareils et services → Ajouter → CEL-CA* : le formulaire affiche **l'identifiant HEMS et la clé publique** → les transmettre à l'administrateur.
+2. *Paramètres → Appareils et services → Ajouter → WattKeeper* : le formulaire affiche **l'identifiant HEMS et la clé publique** → les transmettre à l'administrateur.
 3. L'administrateur enrôle le HEMS et renvoie une **clé d'accès CEL** (`CEL1.…`) :
 
    ```bash
@@ -66,7 +70,7 @@ Sauvegarder `cel_admin_key.json` hors ligne (clé de l'administrateur).
 
 La clé d'accès est valable 365 jours (`--days`). **30 jours avant l'échéance**, une alerte apparaît dans
 *Réparations* (date aussi visible dans l'attribut `access_key_expires` de `sensor.<hems>_identifiant_hems`) :
-l'administrateur émet une nouvelle clé (`member-access`), à coller via *CEL-CA → ⋮ → Reconfigurer*.
+l'administrateur émet une nouvelle clé (`member-access`), à coller via *WattKeeper → ⋮ → Reconfigurer*.
 Si la clé est refusée (expirée, révoquée), HA ouvre automatiquement une demande de **réauthentification**.
 Dans les deux cas l'identité du HEMS est conservée.
 

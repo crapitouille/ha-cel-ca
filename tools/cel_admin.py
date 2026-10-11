@@ -281,7 +281,7 @@ def cmd_member_access(args: argparse.Namespace) -> str:
     warning = "" if name else "\nWarning: this HEMS is not (yet) in the registry - run 'enroll' and 'publish' too."
     return (
         f"Access key for {name or args.id} (valid until {key.exp}).\n"
-        f"Give it to the member, to paste in Home Assistant > CEL-CA > 'CEL access key':\n\n"
+        f"Give it to the member, to paste in Home Assistant > WattKeeper > 'CEL access key':\n\n"
         f"{key.encode()}\n{warning}"
     )
 

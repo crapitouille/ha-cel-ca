@@ -165,7 +165,7 @@
     },
     "access_key_expiring": {
       "title": "{name} : la clé d'accès CEL expire le {expires}",
-      "description": "La clé d'accès de ce HEMS (`{hems_id}`) expire le **{expires}**. Demandez-en une nouvelle à l'administrateur de la CEL (`cel_admin.py member-access --id {hems_id}`), puis collez-la dans *Paramètres → Appareils et services → CEL-CA → Reconfigurer*. L'identité du HEMS est conservée."
+      "description": "La clé d'accès de ce HEMS (`{hems_id}`) expire le **{expires}**. Demandez-en une nouvelle à l'administrateur de la CEL (`cel_admin.py member-access --id {hems_id}`), puis collez-la dans *Paramètres → Appareils et services → WattKeeper → ⋮ → Reconfigurer*. L'identité du HEMS est conservée."
     }
   },
   "exceptions": {

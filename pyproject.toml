@@ -1,6 +1,6 @@
 [project]
 name = "cel-ca"
-version = "0.6.1"
+version = "0.6.2"
 description = "CEL-CA: coordination of Home Assistant HEMS within a Communauté Électrique Locale"
 requires-python = ">=3.13"
 
