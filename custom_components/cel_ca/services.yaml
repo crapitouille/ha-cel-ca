@@ -1,0 +1,130 @@
+reserve:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca
+    power_w:
+      required: true
+      example: 2000
+      selector:
+        number:
+          min: 1
+          max: 100000
+          step: 10
+          unit_of_measurement: W
+          mode: box
+    min_power_w:
+      selector:
+        number:
+          min: 1
+          max: 100000
+          step: 10
+          unit_of_measurement: W
+          mode: box
+    duration_min:
+      default: 15
+      selector:
+        number:
+          min: 1
+          max: 240
+          unit_of_measurement: min
+    producer_id:
+      example: hems-abcdefghijklmnopqrstuvwx
+      selector:
+        text:
+    offer_id:
+      selector:
+        text:
+    start:
+      selector:
+        datetime:
+reserve_global:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca
+    power_w:
+      required: true
+      example: 5000
+      selector:
+        number:
+          min: 1
+          max: 100000
+          step: 10
+          unit_of_measurement: W
+          mode: box
+    min_power_w:
+      selector:
+        number:
+          min: 1
+          max: 100000
+          step: 10
+          unit_of_measurement: W
+          mode: box
+    duration_min:
+      default: 15
+      selector:
+        number:
+          min: 1
+          max: 240
+          unit_of_measurement: min
+    start:
+      selector:
+        datetime:
+cancel_reservation:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca
+    reservation_id:
+      required: true
+      selector:
+        text:
+publish_offer:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca
+    power_w:
+      required: true
+      example: 3000
+      selector:
+        number:
+          min: 0
+          max: 100000
+          step: 10
+          unit_of_measurement: W
+          mode: box
+    duration_min:
+      default: 60
+      selector:
+        number:
+          min: 1
+          max: 1440
+          unit_of_measurement: min
+    start:
+      selector:
+        datetime:
+    offer_id:
+      selector:
+        text:
+withdraw_offer:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca
+    offer_id:
+      required: true
+      selector:
+        text:
+generate_dashboard:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: cel_ca

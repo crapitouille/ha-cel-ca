@@ -1,0 +1,7 @@
+pytest-homeassistant-custom-component>=0.13.316
+pytest-cov
+pyyaml
+shellcheck-py
+# reference implementations for the SAS signatures (tests only, not used at runtime)
+azure-data-tables
+azure-storage-queue

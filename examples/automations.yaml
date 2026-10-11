@@ -1,0 +1,132 @@
+# Exemples d'automatisations Home Assistant pour CEL-CA
+
+# 1) Consommateur : réserver le surplus de la communauté pour la recharge du VE
+- alias: "CEL - Réserver le surplus pour la voiture"
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.maison_surplus_disponible_dans_la_communaute
+      above: 1400
+      for: "00:02:00"
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.voiture_branchee
+      state: "on"
+    - condition: numeric_state
+      entity_id: sensor.maison_puissance_reservee_consommation
+      below: 1
+  actions:
+    - action: cel_ca.reserve
+      data:
+        power_w: "{{ [states('sensor.maison_surplus_disponible_dans_la_communaute') | int, 7000] | min }}"
+        min_power_w: 1400
+        duration_min: 60
+      response_variable: resa
+    - if: "{{ resa.status in ['accepted', 'partial'] }}"
+      then:
+        - action: input_number.set_value
+          target:
+            entity_id: input_number.cel_puissance_voiture
+          data:
+            value: "{{ resa.power_w }}"
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.cel_reservation_id
+          data:
+            value: "{{ resa.reservation_id }}"
+
+# 2) Consommateur : adapter la charge si le producteur réduit / annule
+- alias: "CEL - Réservation réduite ou annulée"
+  triggers:
+    - trigger: event
+      event_type: cel_ca_event
+      event_data:
+        role: consumer
+  conditions:
+    - "{{ trigger.event.data.type in ['curtailed', 'cancelled', 'completed'] }}"
+  actions:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.cel_puissance_voiture
+      data:
+        value: "{{ trigger.event.data.power_w if trigger.event.data.type == 'curtailed' else 0 }}"
+
+# 3) Producteur : publier une offre planifiée à partir de la prévision solaire
+- alias: "CEL - Offre planifiée midi"
+  triggers:
+    - trigger: time
+      at: "10:30:00"
+  conditions:
+    - condition: numeric_state
+      entity_id: sensor.energy_production_today_remaining
+      above: 15
+  actions:
+    - action: cel_ca.publish_offer
+      data:
+        power_w: 3000
+        start: "{{ today_at('11:30') }}"
+        duration_min: 180
+
+# 4) Notification quand quelqu'un réserve mon surplus
+- alias: "CEL - Mon surplus est réservé"
+  triggers:
+    - trigger: event
+      event_type: cel_ca_event
+      event_data:
+        type: request_received
+  conditions:
+    - "{{ trigger.event.data.status != 'rejected' }}"
+  actions:
+    - action: persistent_notification.create
+      data:
+        title: "CEL : surplus réservé"
+        message: >
+          {{ trigger.event.data.consumer_name }} a réservé {{ trigger.event.data.power_w }} W
+          jusqu'à {{ as_local(as_datetime(trigger.event.data.end_iso)).strftime('%H:%M') }}.
+
+# 5) Consommateur : réserver 5 kW chez plusieurs voisins (au moins 3 kW, sinon rien)
+- alias: "CEL - Réservation globale pour la voiture"
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.maison_surplus_disponible_dans_la_communaute
+      above: 3000
+      for: "00:02:00"
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.voiture_branchee
+      state: "on"
+    - condition: numeric_state
+      entity_id: sensor.maison_puissance_reservee_consommation
+      below: 1
+  actions:
+    - action: cel_ca.reserve_global
+      data:
+        power_w: 5000
+        min_power_w: 3000
+        duration_min: 60
+      response_variable: resa
+    - if: "{{ resa.status in ['accepted', 'partial'] }}"
+      then:
+        - action: input_number.set_value
+          target:
+            entity_id: input_number.cel_puissance_voiture
+          data:
+            value: "{{ resa.power_w }}"
+        - action: input_text.set_value
+          target:
+            entity_id: input_text.cel_reservation_id
+          data:
+            value: "{{ resa.group_id }}"   # cel_ca.cancel_reservation accepte l'id de groupe
+
+# 6) Un producteur réduit sa part : adapter la puissance de charge au nouveau total
+- alias: "CEL - Réservation globale réduite"
+  triggers:
+    - trigger: event
+      event_type: cel_ca_event
+      event_data:
+        type: group_updated
+  actions:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.cel_puissance_voiture
+      data:
+        value: "{{ trigger.event.data.power_w }}"

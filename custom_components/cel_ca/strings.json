@@ -1,0 +1,317 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Join a Local Electricity Community",
+        "description": "This HEMS has its own cryptographic identity. Send these two values to your CEL administrator, who will reply with your **CEL access key**:\n\nHEMS id: `{hems_id}`\nPublic key: `{public_key}`\n\nKeep this window open while you wait.",
+        "data": {
+          "name": "HEMS name",
+          "access_key": "CEL access key",
+          "private_key": "Existing private key (restore only)"
+        },
+        "data_description": {
+          "access_key": "Text starting with CEL1. sent by the administrator (community, trust anchor and Azure access rights).",
+          "private_key": "Only to restore a HEMS identity after a reinstall. Leave empty for a new HEMS."
+        }
+      },
+      "energy": {
+        "title": "Energy role",
+        "description": "Send the following to your CEL administrator to be enrolled:\n\nHEMS id: `{hems_id}`\nPublic key: `{public_key}`",
+        "data": {
+          "roles": "Roles",
+          "grid_power_entity": "Grid power sensor",
+          "grid_sign": "Sign convention"
+        },
+        "data_description": {
+          "grid_power_entity": "Power at the grid connection point (e.g. P1 meter)."
+        }
+      },
+      "reauth_confirm": {
+        "title": "New CEL access key",
+        "description": "A new access key is needed (new version of the CEL, expired or renewed key). Send these values to your administrator if they ask:\n\nHEMS id: `{hems_id}`\nPublic key: `{public_key}`",
+        "data": {
+          "access_key": "CEL access key"
+        }
+      },
+      "reconfigure": {
+        "title": "Replace the CEL access key",
+        "description": "Paste the new access key issued by the CEL administrator for this HEMS (`{hems_id}`). The identity of the HEMS is kept.",
+        "data": {
+          "access_key": "CEL access key"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach the CEL storage.",
+      "invalid_auth": "The CEL storage refused the access key (expired or revoked?).",
+      "invalid_access_key": "This is not a valid CEL access key.",
+      "wrong_identity": "This access key was issued for another HEMS id.",
+      "inbox_missing": "Your inbox does not exist in the CEL storage: ask the administrator to (re)issue your access key.",
+      "invalid_private_key": "Invalid private key.",
+      "no_role": "Select at least one role."
+    },
+    "abort": {
+      "already_configured": "This HEMS identity is already configured.",
+      "reauth_successful": "The new access key is active.",
+      "reconfigure_successful": "The new access key is active."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "CEL options",
+        "data": {
+          "roles": "Roles",
+          "grid_power_entity": "Grid power sensor",
+          "grid_sign": "Sign convention",
+          "offer_margin_w": "Safety margin (W)",
+          "min_offer_w": "Minimum offered power (W)",
+          "offer_horizon_min": "Offer horizon (min)",
+          "update_threshold_pct": "Republication threshold (%)",
+          "smoothing_s": "Surplus smoothing window (s)"
+        }
+      }
+    },
+    "error": {
+      "no_role": "Select at least one role."
+    }
+  },
+  "selector": {
+    "roles": {
+      "options": {
+        "producer": "Producer (offers its surplus)",
+        "consumer": "Consumer (reserves surplus)"
+      }
+    },
+    "grid_sign": {
+      "options": {
+        "import_positive": "Positive when importing from the grid",
+        "export_positive": "Positive when exporting to the grid"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "connected": {
+        "name": "CEL connection"
+      },
+      "enrolled": {
+        "name": "Enrolled"
+      },
+      "peer_online": {
+        "name": "Online"
+      }
+    },
+    "sensor": {
+      "community_surplus": {
+        "name": "Community surplus available"
+      },
+      "reserved_in": {
+        "name": "Reserved power (consumption)"
+      },
+      "reserved_out": {
+        "name": "Reserved power (production)"
+      },
+      "offered_power": {
+        "name": "Offered surplus"
+      },
+      "peers_online": {
+        "name": "HEMS online"
+      },
+      "compliance": {
+        "name": "Commitment compliance"
+      },
+      "hems_id": {
+        "name": "HEMS identifier"
+      },
+      "participants": {
+        "name": "Participants online"
+      },
+      "community_offered": {
+        "name": "Community surplus offered"
+      },
+      "community_reserved": {
+        "name": "Community reserved power"
+      },
+      "peer_offered": {
+        "name": "Offered surplus"
+      },
+      "peer_available": {
+        "name": "Available surplus"
+      },
+      "peer_reserved_out": {
+        "name": "Reserved power (production)"
+      },
+      "peer_reserved_in": {
+        "name": "Reserved power (consumption)"
+      },
+      "peer_reputation": {
+        "name": "Commitment compliance"
+      },
+      "peer_last_seen": {
+        "name": "Last seen"
+      }
+    },
+    "switch": {
+      "auto_offer": {
+        "name": "Publish surplus automatically"
+      }
+    }
+  },
+  "issues": {
+    "not_enrolled": {
+      "title": "{name} is not enrolled in the CEL",
+      "description": "The CEL registry does not contain this HEMS. Ask your administrator to enroll:\n\nHEMS id: `{hems_id}`\nPublic key: `{public_key}`"
+    },
+    "access_key_expiring": {
+      "title": "{name}: the CEL access key expires on {expires}",
+      "description": "The access key of this HEMS (`{hems_id}`) expires on **{expires}**. Ask your CEL administrator for a new one (`cel_admin.py member-access --id {hems_id}`), then paste it in *Settings → Devices & services → CEL-CA → Reconfigure*. The identity of the HEMS is kept."
+    }
+  },
+  "exceptions": {
+    "entry_not_found": {
+      "message": "CEL configuration entry not found or not loaded."
+    },
+    "no_entry": {
+      "message": "No CEL HEMS is configured."
+    },
+    "multiple_entries": {
+      "message": "Several CEL HEMS are configured: specify config_entry_id."
+    },
+    "unknown_reservation": {
+      "message": "Unknown or already finished reservation."
+    },
+    "unknown_offer": {
+      "message": "Unknown offer."
+    },
+    "invalid_offer": {
+      "message": "Invalid offer: {error}"
+    }
+  },
+  "services": {
+    "reserve": {
+      "name": "Reserve surplus",
+      "description": "Reserves surplus published by another HEMS of the CEL. Returns the producer's answer.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        },
+        "power_w": {
+          "name": "Power",
+          "description": "Requested power in W."
+        },
+        "min_power_w": {
+          "name": "Minimum power",
+          "description": "Accept a partial grant down to this power (default: all or nothing)."
+        },
+        "duration_min": {
+          "name": "Duration",
+          "description": "Duration of the reservation in minutes."
+        },
+        "producer_id": {
+          "name": "Producer",
+          "description": "HEMS id of a specific producer (default: best offer)."
+        },
+        "offer_id": {
+          "name": "Offer",
+          "description": "Specific offer id."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start time (default: now)."
+        }
+      }
+    },
+    "cancel_reservation": {
+      "name": "Cancel reservation",
+      "description": "Cancels one of your reservations.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        },
+        "reservation_id": {
+          "name": "Reservation",
+          "description": "Reservation or group id (a group cancels every reservation of a global reservation)."
+        }
+      }
+    },
+    "publish_offer": {
+      "name": "Publish offer",
+      "description": "Publishes a manual surplus offer (e.g. from a solar forecast).",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        },
+        "power_w": {
+          "name": "Power",
+          "description": "Offered power in W."
+        },
+        "duration_min": {
+          "name": "Duration",
+          "description": "Duration of the offer in minutes."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start time (default: now)."
+        },
+        "offer_id": {
+          "name": "Offer",
+          "description": "Existing offer id to update."
+        }
+      }
+    },
+    "withdraw_offer": {
+      "name": "Withdraw offer",
+      "description": "Withdraws an offer; its reservations are cancelled.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        },
+        "offer_id": {
+          "name": "Offer",
+          "description": "Offer id."
+        }
+      }
+    },
+    "generate_dashboard": {
+      "name": "Generate community dashboard",
+      "description": "Returns a dashboard showing every participant of the CEL, with the real entity ids. Copy the response and paste it as-is in a dashboard's raw configuration editor.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        }
+      }
+    },
+    "reserve_global": {
+      "name": "Reserve surplus from the community",
+      "description": "Reserves a total power spread over several producers of the CEL, proportionally to their available surplus. All or nothing below the minimum power. Returns the group id and the reservation of each producer.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Only needed when several HEMS are configured."
+        },
+        "power_w": {
+          "name": "Total power",
+          "description": "Requested total power in W."
+        },
+        "min_power_w": {
+          "name": "Minimum total power",
+          "description": "Below this total nothing is kept (default: the requested power)."
+        },
+        "duration_min": {
+          "name": "Duration",
+          "description": "Duration of the reservation in minutes."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start time (default: now)."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "domain": "cel_ca",
+  "name": "CEL-CA - Communauté Électrique Locale",
+  "codeowners": [
+    "@crapitouille"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/crapitouille/ha-cel-ca",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/crapitouille/ha-cel-ca/issues",
+  "loggers": [
+    "custom_components.cel_ca"
+  ],
+  "requirements": [],
+  "version": "0.6.1"
+}

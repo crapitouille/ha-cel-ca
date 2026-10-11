@@ -1,0 +1,317 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Rejoindre une Communauté Électrique Locale",
+        "description": "Ce HEMS possède sa propre identité cryptographique. Envoyez ces deux valeurs à l'administrateur de la CEL, qui vous répondra avec votre **clé d'accès CEL** :\n\nIdentifiant HEMS : `{hems_id}`\nClé publique : `{public_key}`\n\nGardez cette fenêtre ouverte en attendant.",
+        "data": {
+          "name": "Nom du HEMS",
+          "access_key": "Clé d'accès CEL",
+          "private_key": "Clé privée existante (restauration uniquement)"
+        },
+        "data_description": {
+          "access_key": "Texte commençant par CEL1. envoyé par l'administrateur (communauté, ancre de confiance et droits d'accès Azure).",
+          "private_key": "Uniquement pour restaurer l'identité d'un HEMS après réinstallation. Laisser vide pour un nouveau HEMS."
+        }
+      },
+      "energy": {
+        "title": "Rôle énergétique",
+        "description": "Transmettez ces informations à l'administrateur de la CEL pour être enrôlé :\n\nIdentifiant HEMS : `{hems_id}`\nClé publique : `{public_key}`",
+        "data": {
+          "roles": "Rôles",
+          "grid_power_entity": "Capteur de puissance réseau",
+          "grid_sign": "Convention de signe"
+        },
+        "data_description": {
+          "grid_power_entity": "Puissance au point de raccordement (p. ex. compteur P1)."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Nouvelle clé d'accès CEL",
+        "description": "Une nouvelle clé d'accès est nécessaire (nouvelle version de la CEL, clé expirée ou renouvelée). Transmettez ces valeurs à l'administrateur s'il les demande :\n\nIdentifiant HEMS : `{hems_id}`\nClé publique : `{public_key}`",
+        "data": {
+          "access_key": "Clé d'accès CEL"
+        }
+      },
+      "reconfigure": {
+        "title": "Remplacer la clé d'accès CEL",
+        "description": "Collez la nouvelle clé d'accès émise par l'administrateur de la CEL pour ce HEMS (`{hems_id}`). L'identité du HEMS est conservée.",
+        "data": {
+          "access_key": "Clé d'accès CEL"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Le stockage de la CEL est injoignable.",
+      "invalid_auth": "Le stockage de la CEL a refusé la clé d'accès (expirée ou révoquée ?).",
+      "invalid_access_key": "Ce n'est pas une clé d'accès CEL valide.",
+      "wrong_identity": "Cette clé d'accès a été émise pour un autre identifiant HEMS.",
+      "inbox_missing": "Votre boîte de réception n'existe pas dans le stockage de la CEL : demandez à l'administrateur de (ré)émettre votre clé d'accès.",
+      "invalid_private_key": "Clé privée invalide.",
+      "no_role": "Sélectionnez au moins un rôle."
+    },
+    "abort": {
+      "already_configured": "Cette identité HEMS est déjà configurée.",
+      "reauth_successful": "La nouvelle clé d'accès est active.",
+      "reconfigure_successful": "La nouvelle clé d'accès est active."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options CEL",
+        "data": {
+          "roles": "Rôles",
+          "grid_power_entity": "Capteur de puissance réseau",
+          "grid_sign": "Convention de signe",
+          "offer_margin_w": "Marge de sécurité (W)",
+          "min_offer_w": "Puissance minimale proposée (W)",
+          "offer_horizon_min": "Horizon de l'offre (min)",
+          "update_threshold_pct": "Seuil de republication (%)",
+          "smoothing_s": "Fenêtre de lissage du surplus (s)"
+        }
+      }
+    },
+    "error": {
+      "no_role": "Sélectionnez au moins un rôle."
+    }
+  },
+  "selector": {
+    "roles": {
+      "options": {
+        "producer": "Producteur (propose son surplus)",
+        "consumer": "Consommateur (réserve du surplus)"
+      }
+    },
+    "grid_sign": {
+      "options": {
+        "import_positive": "Positif en soutirage du réseau",
+        "export_positive": "Positif en injection vers le réseau"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "connected": {
+        "name": "Connexion CEL"
+      },
+      "enrolled": {
+        "name": "Enrôlé"
+      },
+      "peer_online": {
+        "name": "En ligne"
+      }
+    },
+    "sensor": {
+      "community_surplus": {
+        "name": "Surplus disponible dans la communauté"
+      },
+      "reserved_in": {
+        "name": "Puissance réservée (consommation)"
+      },
+      "reserved_out": {
+        "name": "Puissance réservée (production)"
+      },
+      "offered_power": {
+        "name": "Surplus proposé"
+      },
+      "peers_online": {
+        "name": "HEMS en ligne"
+      },
+      "compliance": {
+        "name": "Respect des engagements"
+      },
+      "hems_id": {
+        "name": "Identifiant HEMS"
+      },
+      "participants": {
+        "name": "Participants en ligne"
+      },
+      "community_offered": {
+        "name": "Surplus total proposé"
+      },
+      "community_reserved": {
+        "name": "Puissance réservée dans la communauté"
+      },
+      "peer_offered": {
+        "name": "Surplus proposé"
+      },
+      "peer_available": {
+        "name": "Surplus disponible"
+      },
+      "peer_reserved_out": {
+        "name": "Puissance réservée (production)"
+      },
+      "peer_reserved_in": {
+        "name": "Puissance réservée (consommation)"
+      },
+      "peer_reputation": {
+        "name": "Respect des engagements"
+      },
+      "peer_last_seen": {
+        "name": "Dernier contact"
+      }
+    },
+    "switch": {
+      "auto_offer": {
+        "name": "Publier le surplus automatiquement"
+      }
+    }
+  },
+  "issues": {
+    "not_enrolled": {
+      "title": "{name} n'est pas enrôlé dans la CEL",
+      "description": "Le registre de la CEL ne contient pas ce HEMS. Demandez à l'administrateur d'enrôler :\n\nIdentifiant HEMS : `{hems_id}`\nClé publique : `{public_key}`"
+    },
+    "access_key_expiring": {
+      "title": "{name} : la clé d'accès CEL expire le {expires}",
+      "description": "La clé d'accès de ce HEMS (`{hems_id}`) expire le **{expires}**. Demandez-en une nouvelle à l'administrateur de la CEL (`cel_admin.py member-access --id {hems_id}`), puis collez-la dans *Paramètres → Appareils et services → CEL-CA → Reconfigurer*. L'identité du HEMS est conservée."
+    }
+  },
+  "exceptions": {
+    "entry_not_found": {
+      "message": "Entrée de configuration CEL introuvable ou non chargée."
+    },
+    "no_entry": {
+      "message": "Aucun HEMS CEL n'est configuré."
+    },
+    "multiple_entries": {
+      "message": "Plusieurs HEMS CEL sont configurés : précisez config_entry_id."
+    },
+    "unknown_reservation": {
+      "message": "Réservation inconnue ou déjà terminée."
+    },
+    "unknown_offer": {
+      "message": "Offre inconnue."
+    },
+    "invalid_offer": {
+      "message": "Offre invalide : {error}"
+    }
+  },
+  "services": {
+    "reserve": {
+      "name": "Réserver du surplus",
+      "description": "Réserve du surplus publié par un autre HEMS de la CEL. Renvoie la réponse du producteur.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        },
+        "power_w": {
+          "name": "Puissance",
+          "description": "Puissance demandée en W."
+        },
+        "min_power_w": {
+          "name": "Puissance minimale",
+          "description": "Accepte une attribution partielle jusqu'à cette puissance (par défaut : tout ou rien)."
+        },
+        "duration_min": {
+          "name": "Durée",
+          "description": "Durée de la réservation en minutes."
+        },
+        "producer_id": {
+          "name": "Producteur",
+          "description": "Identifiant d'un producteur précis (par défaut : meilleure offre)."
+        },
+        "offer_id": {
+          "name": "Offre",
+          "description": "Identifiant d'une offre précise."
+        },
+        "start": {
+          "name": "Début",
+          "description": "Heure de début (par défaut : maintenant)."
+        }
+      }
+    },
+    "cancel_reservation": {
+      "name": "Annuler une réservation",
+      "description": "Annule une de vos réservations.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        },
+        "reservation_id": {
+          "name": "Réservation",
+          "description": "Identifiant de réservation ou de groupe (un groupe annule toutes les réservations d'une réservation globale)."
+        }
+      }
+    },
+    "publish_offer": {
+      "name": "Publier une offre",
+      "description": "Publie une offre manuelle de surplus (p. ex. à partir d'une prévision solaire).",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        },
+        "power_w": {
+          "name": "Puissance",
+          "description": "Puissance proposée en W."
+        },
+        "duration_min": {
+          "name": "Durée",
+          "description": "Durée de l'offre en minutes."
+        },
+        "start": {
+          "name": "Début",
+          "description": "Heure de début (par défaut : maintenant)."
+        },
+        "offer_id": {
+          "name": "Offre",
+          "description": "Identifiant d'une offre existante à mettre à jour."
+        }
+      }
+    },
+    "withdraw_offer": {
+      "name": "Retirer une offre",
+      "description": "Retire une offre ; ses réservations sont annulées.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        },
+        "offer_id": {
+          "name": "Offre",
+          "description": "Identifiant de l'offre."
+        }
+      }
+    },
+    "generate_dashboard": {
+      "name": "Générer le tableau de bord de la communauté",
+      "description": "Renvoie un tableau de bord montrant tous les participants de la CEL, avec les vrais identifiants d'entités. Copier la réponse et la coller telle quelle dans l'éditeur de configuration brute d'un tableau de bord.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        }
+      }
+    },
+    "reserve_global": {
+      "name": "Réserver du surplus dans la communauté",
+      "description": "Réserve une puissance totale répartie entre plusieurs producteurs de la CEL, au prorata de leur surplus disponible. Tout ou rien sous la puissance minimale. Renvoie l'identifiant de groupe et la réservation de chaque producteur.",
+      "fields": {
+        "config_entry_id": {
+          "name": "HEMS",
+          "description": "Nécessaire seulement si plusieurs HEMS sont configurés."
+        },
+        "power_w": {
+          "name": "Puissance totale",
+          "description": "Puissance totale demandée en W."
+        },
+        "min_power_w": {
+          "name": "Puissance totale minimale",
+          "description": "En dessous de ce total, rien n'est conservé (par défaut : la puissance demandée)."
+        },
+        "duration_min": {
+          "name": "Durée",
+          "description": "Durée de la réservation en minutes."
+        },
+        "start": {
+          "name": "Début",
+          "description": "Heure de début (par défaut : maintenant)."
+        }
+      }
+    }
+  }
+}
